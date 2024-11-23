@@ -1,31 +1,37 @@
-import { StyleSheet } from 'react-native';
+import React, { useContext } from 'react';
+import { View, StyleSheet } from 'react-native';
+import PackingList from '@/components/PackingList';
+import Stats from '@/components/Stats';
+import { SharedStateContext } from './_layout';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+export default function Index(): JSX.Element {
+    const sharedState = useContext(SharedStateContext);
 
-export default function TabOneScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-    </View>
-  );
+    if (!sharedState) {
+        throw new Error("SharedStateContext is not available");
+    }
+
+    const { items, deleteItem, toggleItem, clearItems } = sharedState;
+
+    return (
+        <View style={styles.container}>
+            <PackingList
+                items={items}
+                onDeleteItem={deleteItem}
+                onToggleItem={toggleItem}
+                onClearList={clearItems}
+            />
+            <Stats items={items} />
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: 'black',
+        padding: 16,
+        justifyContent: 'flex-start', // Align items at the top
+        alignItems: 'stretch', // Stretch children to fill the width
+    },
 });
